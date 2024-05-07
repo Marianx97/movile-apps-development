@@ -24,4 +24,11 @@ final List<Movie> movies = [
     year: 2008,
     posterUrl: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/8QDQExnfNFOtabLDKqfDQuHDsIg.jpg',
   ),
+  Movie(
+    id: '4',
+    title: 'Godzilla Minus One',
+    director: 'Takashi Yamazaki',
+    year: 2023,
+    posterUrl: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hkxxMIGaiCTmrEArK7J56JTKUlB.jpg',
+  ),
 ];
