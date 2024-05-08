@@ -1,13 +1,32 @@
+import 'package:challenge_3/presentation/screens/movies_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:challenge_3/datasource/movie_datasource.dart';
+import 'package:challenge_3/datasource/movie_repository.dart';
 import 'package:challenge_3/domain/movie.dart';
 import 'package:challenge_3/presentation/screens/login_screen.dart';
 
-class MoviesScreen extends StatelessWidget {
+class MoviesScreen extends StatefulWidget {
   static const String name = 'movies_screen';
-  const MoviesScreen({super.key});
+
+  final MovieRepository movieRepository;
+
+  const MoviesScreen({
+    super.key,
+    required this.movieRepository,
+  });
+
+  @override
+  State<MoviesScreen> createState() => _MoviesScreenState();
+}
+
+class _MoviesScreenState extends State<MoviesScreen> {
+  late Future<List<Movie>> movieRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    movieRequest = widget.movieRepository.getMovies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +34,22 @@ class MoviesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Movies'),
       ),
-      body: const _MoviesView(),
+      body: FutureBuilder(
+        future: movieRequest,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.hasData) {
+              return _MoviesView(movieList: snapshot.data!);
+            } else {
+              return Text(snapshot.error.toString());
+            }
+          }
+        }),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           context.goNamed(LoginScreen.name);
@@ -29,14 +63,16 @@ class MoviesScreen extends StatelessWidget {
 }
 
 class _MoviesView extends StatelessWidget {
-  const _MoviesView({super.key});
+  const _MoviesView({super.key, required this.movieList});
+
+  final List<Movie> movieList;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: movies.length,
+      itemCount: movieList.length,
       itemBuilder: (context, index) {
-        final movie = movies[index];
+        final movie = movieList[index];
         return _MovieItemView(
           movie: movie,
         );
@@ -66,10 +102,12 @@ class _MovieItemView extends StatelessWidget {
           ),
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () {
-          context.push('/movie_detail/${movie.id}');
-        },
+        onTap: () => _goToMovieDetails(context, movie),
       ),
     );
   }
+}
+
+void _goToMovieDetails(BuildContext context, Movie movie) {
+  context.push('/movie_detail/${movie.id}');
 }

@@ -1,5 +1,9 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Movie {
-  final String id;
+  @PrimaryKey(autoGenerate: true) 
+  final int id;
   final String title;
   final String director;
   final int year;
