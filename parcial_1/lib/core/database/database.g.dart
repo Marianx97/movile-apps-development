@@ -72,6 +72,8 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
+  AuthorDao? _authorDaoInstance;
+
   BookDao? _bookDaoInstance;
 
   UserDao? _userDaoInstance;
@@ -98,6 +100,8 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Author` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `biography` TEXT NOT NULL, `imageUrl` TEXT)');
+        await database.execute(
             'CREATE TABLE IF NOT EXISTS `Book` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `authorId` INTEGER, `releaseYear` INTEGER, `imageUrl` TEXT, `summary` TEXT NOT NULL, `title` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
@@ -109,6 +113,11 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
+  AuthorDao get authorDao {
+    return _authorDaoInstance ??= _$AuthorDao(database, changeListener);
+  }
+
+  @override
   BookDao get bookDao {
     return _bookDaoInstance ??= _$BookDao(database, changeListener);
   }
@@ -116,6 +125,56 @@ class _$AppDatabase extends AppDatabase {
   @override
   UserDao get userDao {
     return _userDaoInstance ??= _$UserDao(database, changeListener);
+  }
+}
+
+class _$AuthorDao extends AuthorDao {
+  _$AuthorDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _authorInsertionAdapter = InsertionAdapter(
+            database,
+            'Author',
+            (Author item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'biography': item.biography,
+                  'imageUrl': item.imageUrl
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Author> _authorInsertionAdapter;
+
+  @override
+  Future<List<Author>> findAllAuthors() async {
+    return _queryAdapter.queryList('SELECT * FROM Author',
+        mapper: (Map<String, Object?> row) => Author(
+            id: row['id'] as int,
+            name: row['name'] as String,
+            biography: row['biography'] as String,
+            imageUrl: row['imageUrl'] as String?));
+  }
+
+  @override
+  Future<Author?> findAuthorById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Author WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Author(
+            id: row['id'] as int,
+            name: row['name'] as String,
+            biography: row['biography'] as String,
+            imageUrl: row['imageUrl'] as String?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertAuthor(Author author) async {
+    await _authorInsertionAdapter.insert(author, OnConflictStrategy.abort);
   }
 }
 
