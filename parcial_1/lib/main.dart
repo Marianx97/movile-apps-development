@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parcial_1/core/database/database.dart';
+import 'package:parcial_1/core/router/app_router.dart';
 
 late AppDatabase database;
 
@@ -18,12 +19,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
     );
   }
 }
