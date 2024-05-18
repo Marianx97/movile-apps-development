@@ -74,6 +74,8 @@ class _$AppDatabase extends AppDatabase {
 
   BookDao? _bookDaoInstance;
 
+  UserDao? _userDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -97,6 +99,8 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Book` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `authorId` INTEGER, `releaseYear` INTEGER, `imageUrl` TEXT, `summary` TEXT NOT NULL, `title` TEXT NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -107,6 +111,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   BookDao get bookDao {
     return _bookDaoInstance ??= _$BookDao(database, changeListener);
+  }
+
+  @override
+  UserDao get userDao {
+    return _userDaoInstance ??= _$UserDao(database, changeListener);
   }
 }
 
@@ -176,5 +185,45 @@ class _$BookDao extends BookDao {
   @override
   Future<void> insertBook(Book book) async {
     await _bookInsertionAdapter.insert(book, OnConflictStrategy.abort);
+  }
+}
+
+class _$UserDao extends UserDao {
+  _$UserDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _userInsertionAdapter = InsertionAdapter(
+            database,
+            'User',
+            (User item) => <String, Object?>{
+                  'id': item.id,
+                  'email': item.email,
+                  'password': item.password,
+                  'username': item.username
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<User> _userInsertionAdapter;
+
+  @override
+  Future<User?> findUserById(int id) async {
+    return _queryAdapter.query('SELECT * FROM User WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => User(
+            id: row['id'] as int,
+            email: row['email'] as String,
+            password: row['password'] as String,
+            username: row['username'] as String),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertUser(User user) async {
+    await _userInsertionAdapter.insert(user, OnConflictStrategy.abort);
   }
 }
