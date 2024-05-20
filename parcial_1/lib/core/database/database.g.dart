@@ -104,7 +104,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Book` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `authorId` INTEGER, `releaseYear` INTEGER, `imageUrl` TEXT, `summary` TEXT NOT NULL, `title` TEXT NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -274,7 +274,7 @@ class _$UserDao extends UserDao {
   Future<User?> findUserById(int id) async {
     return _queryAdapter.query('SELECT * FROM User WHERE id = ?1',
         mapper: (Map<String, Object?> row) => User(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             email: row['email'] as String,
             password: row['password'] as String,
             username: row['username'] as String),

@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:parcial_1/domain/user.dart';
-
-// TODO: delete this and implement repository method
-List<User> users = [
-  User(id: 1, email: 'alberto@fakemail.com', password: 'pass1', username: 'Albert'),
-  User(id: 2, email: 'barbara@fakemail.com', password: 'pass2', username: 'Barbie'),
-];
+import 'package:parcial_1/presentation/screens/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const name = 'login_screen';
@@ -78,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 suffixIcon: IconButton(
                   icon: Icon(
                     _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                    // color: Theme.of(context).primaryColorDark,
                   ),
                   onPressed: () {
                     setState(() {
@@ -115,9 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             FilledButton(
               onPressed: () {
-                print('Going to signup screen');
-                return;
-                // context.goNamed(SignUpScreen.name);
+                context.pushNamed(SignUpScreen.name);
               },
               child: const Text('Sign Up!'),
             )
