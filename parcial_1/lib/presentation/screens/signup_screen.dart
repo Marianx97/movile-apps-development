@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:parcial_1/domain/user.dart';
-import 'package:parcial_1/presentation/screens/login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const name = 'signup_screen';

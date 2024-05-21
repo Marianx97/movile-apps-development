@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:parcial_1/domain/user.dart';
+import 'package:parcial_1/presentation/screens/books_screen.dart';
 import 'package:parcial_1/presentation/screens/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -94,9 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
 
                 if (checkUserPresent(users)) {
-                  print('Correct user');
-                  return;
-                  // context.goNamed(BooksScreen.name);
+                  context.goNamed(BooksScreen.name);
                 } else {
                   showSnackBar('Invalid credentials', context);
                   return;
@@ -109,6 +108,11 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             FilledButton(
               onPressed: () {
+                userController.text = '';
+                passController.text = '';
+                setState(() {
+                  _passwordVisible = false;
+                });
                 context.pushNamed(SignUpScreen.name);
               },
               child: const Text('Sign Up!'),
