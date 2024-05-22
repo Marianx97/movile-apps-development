@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
 import 'package:parcial_1/presentation/screens/create_book_screen.dart';
+import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
 
 class BooksScreen extends StatefulWidget {
   static const name = 'books_screen';
@@ -26,9 +27,13 @@ class _BooksView extends StatefulWidget {
 }
 
 class _BooksViewState extends State<_BooksView> {
+  final scafoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scafoldKey,
+      drawer: DrawerMenu(scafoldKey: scafoldKey),
       appBar: AppBar(
         title: const Text('Books View'),
       ),
