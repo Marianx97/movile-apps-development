@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
 
 class BooksScreen extends StatelessWidget {
@@ -51,11 +52,7 @@ class _BookItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () {
-          /// TODO:
-          /// - Add function to navigate to book detail
-          print('Tapped card');
-        },
+        onTap: () => _goToBookDetails(context, book),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: _BookItemContent(book: book),
@@ -116,4 +113,8 @@ class _BookItemContent extends StatelessWidget {
       ],
     );
   }
+}
+
+void _goToBookDetails(BuildContext context, Book book) {
+  context.push('/book_detail/${book.id}');
 }
