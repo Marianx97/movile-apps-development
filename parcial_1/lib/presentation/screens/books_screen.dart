@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
+import 'package:parcial_1/presentation/screens/create_book_screen.dart';
 
-class BooksScreen extends StatelessWidget {
+class BooksScreen extends StatefulWidget {
   static const name = 'books_screen';
   const BooksScreen({super.key});
 
+  @override
+  State<BooksScreen> createState() => _BooksScreenState();
+}
+
+class _BooksScreenState extends State<BooksScreen> {
   @override
   Widget build(BuildContext context) {
     return const _BooksView();
   }
 }
 
-class _BooksView extends StatelessWidget {
+class _BooksView extends StatefulWidget {
   const _BooksView();
 
+  @override
+  State<_BooksView> createState() => _BooksViewState();
+}
+
+class _BooksViewState extends State<_BooksView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,13 +33,24 @@ class _BooksView extends StatelessWidget {
         title: const Text('Books View'),
       ),
       body: const _BooksList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.goNamed(CreateBookScreen.name);
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
 
-class _BooksList extends StatelessWidget {
+class _BooksList extends StatefulWidget {
   const _BooksList();
 
+  @override
+  State<_BooksList> createState() => _BooksListState();
+}
+
+class _BooksListState extends State<_BooksList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -116,5 +138,5 @@ class _BookItemContent extends StatelessWidget {
 }
 
 void _goToBookDetails(BuildContext context, Book book) {
-  context.push('/book_detail/${book.id}');
+  context.go('/book_detail/${book.id}');
 }

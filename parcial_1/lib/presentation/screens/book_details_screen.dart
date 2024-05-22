@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:parcial_1/domain/book.dart';
+import 'package:parcial_1/presentation/screens/books_screen.dart';
+import 'package:parcial_1/presentation/widgets/edit_button.dart';
+import 'package:parcial_1/presentation/widgets/go_back_button.dart';
 
 class BookDetailsScreen extends StatelessWidget {
   static const String name = 'book_detail_screen';
@@ -13,8 +16,12 @@ class BookDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Book Detail')),
+      appBar: AppBar(
+        leading: const GoBackButton(backPath: BooksScreen.name),
+        title: const Text('Book Detail'),
+      ),
       body: _BookDetailView(bookId: bookId),
+      floatingActionButton: EditButton(editPath: '/books/edit/$bookId'),
     );
   }
 }
