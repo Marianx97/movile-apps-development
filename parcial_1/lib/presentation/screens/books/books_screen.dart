@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
-import 'package:parcial_1/presentation/screens/create_book_screen.dart';
+import 'package:parcial_1/presentation/screens/books/create_book_screen.dart';
 import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
 
 class BooksScreen extends StatefulWidget {

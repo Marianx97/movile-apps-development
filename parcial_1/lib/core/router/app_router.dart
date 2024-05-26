@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
-import 'package:parcial_1/presentation/screens/author_details_screen.dart';
-import 'package:parcial_1/presentation/screens/authors_screen.dart';
-import 'package:parcial_1/presentation/screens/book_details_screen.dart';
-import 'package:parcial_1/presentation/screens/books_screen.dart';
-import 'package:parcial_1/presentation/screens/create_book_screen.dart';
-import 'package:parcial_1/presentation/screens/edit_book_screen.dart';
+import 'package:parcial_1/presentation/screens/authors/author_details_screen.dart';
+import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
+import 'package:parcial_1/presentation/screens/books/book_details_screen.dart';
+import 'package:parcial_1/presentation/screens/books/books_screen.dart';
+import 'package:parcial_1/presentation/screens/books/create_book_screen.dart';
+import 'package:parcial_1/presentation/screens/books/edit_book_screen.dart';
 import 'package:parcial_1/presentation/screens/login_screen.dart';
 import 'package:parcial_1/presentation/screens/signup_screen.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
-import 'package:parcial_1/presentation/screens/book_form.dart';
-import 'package:parcial_1/presentation/screens/books_screen.dart';
+import 'package:parcial_1/presentation/screens/books/book_form.dart';
+import 'package:parcial_1/presentation/screens/books/books_screen.dart';
 
 class CreateBookScreen extends StatelessWidget {
   static const name = 'create_book_screen';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parcial_1/domain/author.dart';
-import 'package:parcial_1/presentation/screens/authors_screen.dart';
+import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
 // import 'package:parcial_1/presentation/widgets/edit_button.dart';
 import 'package:parcial_1/presentation/widgets/go_back_button.dart';
 
