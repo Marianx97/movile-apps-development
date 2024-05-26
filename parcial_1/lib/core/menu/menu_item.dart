@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 class MenuItem {
   final String title;
-  final String subtitle;
   final IconData icon;
   final String link;
 
   const MenuItem({
     required this.title,
-    required this.subtitle,
     required this.icon,
     required this.link,
   });
@@ -17,21 +15,28 @@ class MenuItem {
 const List<MenuItem> menuItems = [
   MenuItem(
     title: 'Books',
-    subtitle: 'List of books in the database',
-    icon: Icons.book,
+    icon: Icons.menu_book_rounded,
     link: '/books'
   ),
   MenuItem(
+    title: 'New Book',
+    icon: Icons.add,
+    link: '/books/add',
+  ),
+  MenuItem(
     title: 'Authors',
-    subtitle: 'List of authors in the database',
     icon: Icons.person,
     link: '/authors'
   ),
+  MenuItem(
+    title: 'New Author',
+    icon: Icons.person_add_alt_1,
+    link: '/authors/add',
+  )
   /// TODO:
   /// - Uncomment when page is ready
   // MenuItem(
   //   title: 'Favorites',
-  //   subtitle: 'List of books marked as favorite',
   //   icon: Icons.star_border_purple500_outlined,
   //   link: '/favorites'
   // ),

@@ -3,10 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
 import 'package:parcial_1/presentation/screens/books/book_form.dart';
 import 'package:parcial_1/presentation/screens/books/books_screen.dart';
+import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
 
 class CreateBookScreen extends StatelessWidget {
   static const name = 'create_book_screen';
-  const CreateBookScreen({super.key});
+  final scafoldKey = GlobalKey<ScaffoldState>();
+
+  CreateBookScreen({super.key});
 
   void _createBook(BuildContext context, Book book) {
     books.add(book);
@@ -16,6 +19,7 @@ class CreateBookScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: DrawerMenu(scafoldKey: scafoldKey, selectedScreen: 1),
       appBar: AppBar(
         title: const Text('Create Book'),
       ),

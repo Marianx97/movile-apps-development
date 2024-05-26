@@ -41,7 +41,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/books/add',
       name: CreateBookScreen.name,
-      builder:(context, state) => const CreateBookScreen(),
+      builder:(context, state) => CreateBookScreen(),
     ),
     GoRoute(
       path: '/books/edit/:bookId',
@@ -71,7 +71,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/authors/add',
       name: CreateAuthorScreen.name,
-      builder: (context, state) => const CreateAuthorScreen(),
+      builder: (context, state) => CreateAuthorScreen(),
     ),
     GoRoute(
       path: '/authors/edit/:authorId',

@@ -33,7 +33,7 @@ class _AuthorsViewState extends State<_AuthorsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scafoldKey,
-      drawer: DrawerMenu(scafoldKey: scafoldKey, selectedScreen: 1),
+      drawer: DrawerMenu(scafoldKey: scafoldKey, selectedScreen: 2),
       appBar: AppBar(
         title: const Text('Authors View'),
       ),
