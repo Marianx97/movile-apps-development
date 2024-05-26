@@ -33,8 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   bool checkUserPresent(List<User> users) {
+    String user = userController.text.trim();
+
     return users.any((element) =>
-      (element.email == userController.text || element.username == userController.text) &&
+      (element.email == user || element.username == user) &&
       element.password == passController.text
     );
   }
