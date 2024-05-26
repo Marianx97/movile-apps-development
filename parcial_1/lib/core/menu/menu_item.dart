@@ -27,10 +27,12 @@ const List<MenuItem> menuItems = [
     icon: Icons.person,
     link: '/authors'
   ),
-  MenuItem(
-    title: 'Favorites',
-    subtitle: 'List of books marked as favorite',
-    icon: Icons.star_border_purple500_outlined,
-    link: '/favorites'
-  ),
+  /// TODO:
+  /// - Uncomment when page is ready
+  // MenuItem(
+  //   title: 'Favorites',
+  //   subtitle: 'List of books marked as favorite',
+  //   icon: Icons.star_border_purple500_outlined,
+  //   link: '/favorites'
+  // ),
 ];

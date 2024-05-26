@@ -96,6 +96,9 @@ class _BookImage extends StatelessWidget {
   }
 }
 
+/// TODO:
+/// - Apply scrolling for long texts
+
 class _BookSummaryCard extends StatelessWidget {
   const _BookSummaryCard({
     required this.book,

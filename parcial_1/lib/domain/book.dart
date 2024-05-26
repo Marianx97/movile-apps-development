@@ -26,7 +26,7 @@ class Book {
 List<Book> books = [
   Book(
     id: 1,
-    authorId: null,
+    authorId: 1,
     releaseYear: 2002,
     imageUrl: null,
     summary: 'Velit sint ea minim occaecat aliqua excepteur mollit esse labore nostrud cupidatat sit. Voluptate laboris amet deserunt aliquip tempor ex id ex. Et pariatur nisi anim veniam proident Lorem velit aliquip proident consectetur cillum reprehenderit pariatur. Eu anim consectetur consectetur elit sit ad eiusmod consequat aliqua do qui eiusmod aliquip. Id ipsum occaecat nostrud duis excepteur ex non occaecat commodo do laborum deserunt excepteur enim. Commodo ipsum proident elit reprehenderit proident nostrud est officia eiusmod amet.',
@@ -34,7 +34,7 @@ List<Book> books = [
   ),
   Book(
     id: 2,
-    authorId: null,
+    authorId: 2,
     releaseYear: 1954,
     imageUrl: null,
     summary: 'Aute exercitation sunt eiusmod velit do eu elit sunt aliqua sit nisi. Culpa officia nostrud et amet enim sunt culpa magna magna non do duis. Labore Lorem consectetur qui irure ex est duis sunt id do amet anim nulla ad. Tempor laborum deserunt cupidatat magna in nisi eiusmod est. Est nisi veniam labore nisi.',
@@ -42,7 +42,7 @@ List<Book> books = [
   ),
   Book(
     id: 3,
-    authorId: null,
+    authorId: 3,
     releaseYear: 1997,
     imageUrl: null,
     summary: 'Aute consectetur deserunt consectetur sit sit cillum magna irure esse. Aute consequat aliqua ad anim ea sunt exercitation incididunt elit enim quis. Pariatur sunt pariatur eu elit ad Lorem aliqua et voluptate deserunt deserunt fugiat duis.',

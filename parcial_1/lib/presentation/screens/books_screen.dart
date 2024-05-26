@@ -33,7 +33,7 @@ class _BooksViewState extends State<_BooksView> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scafoldKey,
-      drawer: DrawerMenu(scafoldKey: scafoldKey),
+      drawer: DrawerMenu(scafoldKey: scafoldKey, selectedScreen: 0),
       appBar: AppBar(
         title: const Text('Books View'),
       ),
@@ -58,12 +58,15 @@ class _BooksList extends StatefulWidget {
 class _BooksListState extends State<_BooksList> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: books.length,
-      itemBuilder: (context, index) {
-        final book = books[index];
-        return _BookItem(book: book);
-      }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: ListView.builder(
+        itemCount: books.length,
+        itemBuilder: (context, index) {
+          final book = books[index];
+          return _BookItem(book: book);
+        }
+      ),
     );
   }
 }
