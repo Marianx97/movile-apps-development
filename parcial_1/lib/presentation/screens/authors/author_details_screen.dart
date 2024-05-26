@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parcial_1/domain/author.dart';
 import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
-// import 'package:parcial_1/presentation/widgets/edit_button.dart';
+import 'package:parcial_1/presentation/widgets/edit_button.dart';
 import 'package:parcial_1/presentation/widgets/go_back_button.dart';
 
 class AuthorDetailsScreen extends StatelessWidget {
@@ -21,7 +21,7 @@ class AuthorDetailsScreen extends StatelessWidget {
         title: const Text('Author Detail'),
       ),
       body: _AuthorDetailView(authorId: authorId),
-      // floatingActionButton: EditButton(editPath: '/authors/edit/$authorId'),
+      floatingActionButton: EditButton(editPath: '/authors/edit/$authorId'),
     );
   }
 }

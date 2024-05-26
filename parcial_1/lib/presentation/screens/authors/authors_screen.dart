@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/author.dart';
+import 'package:parcial_1/presentation/screens/authors/create_author_screen.dart';
 import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
 
 class AuthorsScreen extends StatefulWidget {
@@ -36,7 +37,13 @@ class _AuthorsViewState extends State<_AuthorsView> {
       appBar: AppBar(
         title: const Text('Authors View'),
       ),
-      body: const _AuthorsList()
+      body: const _AuthorsList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.goNamed(CreateAuthorScreen.name);
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

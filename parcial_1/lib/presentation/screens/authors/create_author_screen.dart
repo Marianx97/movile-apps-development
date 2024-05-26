@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:parcial_1/domain/author.dart';
+import 'package:parcial_1/presentation/screens/authors/author_form.dart';
+import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
+
+class CreateAuthorScreen extends StatelessWidget {
+  static const name = 'create_author_screen';
+  const CreateAuthorScreen({super.key});
+
+  void _createAuthor(BuildContext context, Author author) {
+    authors.add(author);
+    context.goNamed(AuthorsScreen.name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Author'),
+      ),
+      body: AuthorForm(
+        onSave: (author) => _createAuthor(context, author),
+      ),
+    );
+  }
+}

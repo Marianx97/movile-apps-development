@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/presentation/screens/authors/author_details_screen.dart';
 import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
+import 'package:parcial_1/presentation/screens/authors/create_author_screen.dart';
+import 'package:parcial_1/presentation/screens/authors/edit_author_screen.dart';
 import 'package:parcial_1/presentation/screens/books/book_details_screen.dart';
 import 'package:parcial_1/presentation/screens/books/books_screen.dart';
 import 'package:parcial_1/presentation/screens/books/create_book_screen.dart';
@@ -66,5 +68,20 @@ final appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/authors/add',
+      name: CreateAuthorScreen.name,
+      builder: (context, state) => const CreateAuthorScreen(),
+    ),
+    GoRoute(
+      path: '/authors/edit/:authorId',
+      name: EditAuthorScreen.name,
+      builder: (context, state) {
+        final authorId = state.pathParameters['authorId'];
+        return EditAuthorScreen(
+          authorId: int.tryParse(authorId ?? '') ?? -1,
+        );
+      },
+    )
   ],
 );

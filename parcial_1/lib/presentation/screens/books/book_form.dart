@@ -107,22 +107,18 @@ class _BookFormState extends State<BookForm> {
               controller: _releaseYearController,
               decoration: const InputDecoration(labelText: 'Release Year'),
               keyboardType: TextInputType.number,
-              // validator: (value) {
-              //   if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-              //     return 'Please enter a valid number';
-              //   }
-              //   return null;
-              // },
+              validator: (value) {
+                if (value != null && (
+                  int.tryParse(value) == null && int.tryParse(value)! < 0
+                )) {
+                  return 'Please enter a valid year';
+                }
+                return null;
+              },
             ),
             TextFormField(
               controller: _imageUrlController,
               decoration: const InputDecoration(labelText: 'Image URL'),
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter an image URL';
-              //   }
-              //   return null;
-              // },
             ),
             const SizedBox(height: 20),
             Row(
