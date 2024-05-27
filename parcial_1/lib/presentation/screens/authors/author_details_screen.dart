@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:parcial_1/datasource/repositories/author_repository.dart';
+import 'package:parcial_1/datasource/repositories/book_repository.dart';
 import 'package:parcial_1/domain/author.dart';
+import 'package:parcial_1/domain/book.dart';
 import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
 import 'package:parcial_1/presentation/widgets/edit_button.dart';
 import 'package:parcial_1/presentation/widgets/go_back_button.dart';
 
-class AuthorDetailsScreen extends StatelessWidget {
+class AuthorDetailsScreen extends StatefulWidget {
   static const String name = 'author_detail_screen';
   final int authorId;
+  final AuthorRepository authorRepository;
 
   const AuthorDetailsScreen({
     super.key,
     required this.authorId,
+    required this.authorRepository,
   });
+
+  @override
+  State<AuthorDetailsScreen> createState() => _AuthorDetailsScreenState();
+}
+
+class _AuthorDetailsScreenState extends State<AuthorDetailsScreen> {
+  late Future<Author?> authorRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    authorRequest = widget.authorRepository.getAuthorById(widget.authorId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +38,32 @@ class AuthorDetailsScreen extends StatelessWidget {
         leading: const GoBackButton(backPath: AuthorsScreen.name),
         title: const Text('Author Detail'),
       ),
-      body: _AuthorDetailView(authorId: authorId),
-      floatingActionButton: EditButton(editPath: '/authors/edit/$authorId'),
+      body: FutureBuilder(
+        future: authorRequest,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (snapshot.hasData) {
+              return _AuthorDetailView(author: snapshot.data!);
+            } else {
+              return const Text('No author found');
+            }
+          }
+        }),
+      ),
+      floatingActionButton: EditButton(editPath: '/authors/edit/${widget.authorId}'),
     );
   }
 }
 
 class _AuthorDetailView extends StatelessWidget {
-  final int authorId;
-  const _AuthorDetailView({required this.authorId});
+  final Author author;
+
+  const _AuthorDetailView({required this.author});
 
   @override
   Widget build(BuildContext context) {
-    final Author author = authors.firstWhere((author) => author.id == authorId);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -42,28 +73,54 @@ class _AuthorDetailView extends StatelessWidget {
   }
 }
 
-class _AuthorDetailContent extends StatelessWidget {
+class _AuthorDetailContent extends StatefulWidget {
   final Author author;
 
   const _AuthorDetailContent({required this.author});
+
+  @override
+  State<_AuthorDetailContent> createState() => _AuthorDetailContentState();
+}
+
+class _AuthorDetailContentState extends State<_AuthorDetailContent> {
+  late Future<List<Book>> booksRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    booksRequest = BookRepository().getBooksByAuthor(widget.author.id!);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _AuthorImage(imageUrl: author.imageUrl),
+        _AuthorImage(imageUrl: widget.author.imageUrl),
         Text(
-          author.name,
+          widget.author.name,
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 15),
-        Text(
-          'Amount of registered books: ${author.books()}',
+        FutureBuilder(
+          future: booksRequest,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              if (snapshot.hasData) {
+                return Text(
+                  'Registered books: ${snapshot.data!.length}',
+                );
+              } else {
+                return const Text('Registered books: 0');
+              }
+            }
+          }),
         ),
         const SizedBox(height: 15),
-        _AuthorBiographyCard(author: author),
+        _AuthorBiographyCard(author: widget.author),
       ],
     );
   }

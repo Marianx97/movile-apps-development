@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:parcial_1/datasource/repositories/author_repository.dart';
+import 'package:parcial_1/datasource/repositories/book_repository.dart';
 import 'package:parcial_1/domain/author.dart';
+import 'package:parcial_1/domain/book.dart';
 import 'package:parcial_1/presentation/screens/authors/create_author_screen.dart';
 import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
 
 class AuthorsScreen extends StatefulWidget {
   static const name = 'authors_screen';
-  const AuthorsScreen({super.key});
+  final AuthorRepository authorRepository;
+
+  const AuthorsScreen({
+    super.key,
+    required this.authorRepository,
+  });
 
   @override
   State<AuthorsScreen> createState() => _AuthorsScreenState();
@@ -15,12 +23,14 @@ class AuthorsScreen extends StatefulWidget {
 class _AuthorsScreenState extends State<AuthorsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const _AuthorsView();
+    return _AuthorsView(authorRepository: widget.authorRepository);
   }
 }
 
 class _AuthorsView extends StatefulWidget {
-  const _AuthorsView();
+  final AuthorRepository authorRepository;
+
+  const _AuthorsView({required this.authorRepository});
 
   @override
   State<_AuthorsView> createState() => _AuthorsViewState();
@@ -28,6 +38,13 @@ class _AuthorsView extends StatefulWidget {
 
 class _AuthorsViewState extends State<_AuthorsView> {
   final scafoldKey = GlobalKey<ScaffoldState>();
+  late Future<List<Author>> authorsRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    authorsRequest = widget.authorRepository.getAuthors();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +54,20 @@ class _AuthorsViewState extends State<_AuthorsView> {
       appBar: AppBar(
         title: const Text('Authors View'),
       ),
-      body: const _AuthorsList(),
+      body: FutureBuilder(
+        future: authorsRequest,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (snapshot.hasData) {
+              return _AuthorsList(authorsList: snapshot.data!);
+            } else {
+              return Text(snapshot.error.toString());
+            }
+          }
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.goNamed(CreateAuthorScreen.name);
@@ -49,7 +79,8 @@ class _AuthorsViewState extends State<_AuthorsView> {
 }
 
 class _AuthorsList extends StatefulWidget {
-  const _AuthorsList();
+  final List<Author> authorsList;
+  const _AuthorsList({required this.authorsList});
 
   @override
   State<_AuthorsList> createState() => _AuthorsListState();
@@ -61,9 +92,9 @@ class _AuthorsListState extends State<_AuthorsList> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: ListView.builder(
-        itemCount: authors.length,
+        itemCount: widget.authorsList.length,
         itemBuilder: (context, index) {
-          final author = authors[index];
+          final author = widget.authorsList[index];
           return _AuthorItem(author: author);
         }
       ),
@@ -71,7 +102,7 @@ class _AuthorsListState extends State<_AuthorsList> {
   }
 }
 
-class _AuthorItem extends StatelessWidget {
+class _AuthorItem extends StatefulWidget {
   final Author author;
 
   const _AuthorItem({
@@ -79,15 +110,43 @@ class _AuthorItem extends StatelessWidget {
   });
 
   @override
+  State<_AuthorItem> createState() => _AuthorItemState();
+}
+
+class _AuthorItemState extends State<_AuthorItem> {
+  late Future<List<Book>> booksRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    booksRequest = BookRepository().getBooksByAuthor(widget.author.id!);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         title: Text(
-          author.name,
+          widget.author.name,
         ),
-        subtitle: Text('Registered books: ${author.books()}'),
+        subtitle: FutureBuilder(
+          future: booksRequest,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              if (snapshot.hasData) {
+                return Text(
+                  'Registered books: ${snapshot.data!.length}',
+                );
+              } else {
+                return const Text('Registered books: 0');
+              }
+            }
+          }),
+        ),
         trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () => _goToAuthorDetails(context, author),
+        onTap: () => _goToAuthorDetails(context, widget.author),
       ),
     );
   }

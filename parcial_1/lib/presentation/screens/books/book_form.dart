@@ -25,10 +25,6 @@ class _BookFormState extends State<BookForm> {
   late TextEditingController _releaseYearController;
   late TextEditingController _imageUrlController;
 
-  /// TODO:
-  /// - Remove this when implementing repository logic
-  late int _booksLength;
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +33,6 @@ class _BookFormState extends State<BookForm> {
     _authorIdController = TextEditingController(text: widget.book?.authorId?.toString() ?? '');
     _releaseYearController = TextEditingController(text: widget.book?.releaseYear?.toString() ?? '');
     _imageUrlController = TextEditingController(text: widget.book?.imageUrl ?? '');
-    _booksLength = books.length;
   }
 
   @override
@@ -53,7 +48,7 @@ class _BookFormState extends State<BookForm> {
   void _saveForm() {
     if (_formKey.currentState!.validate()) {
       final book = Book(
-        id: widget.book?.id ?? _booksLength + 1,
+        id: widget.book?.id,
         title: _titleController.text,
         summary: _summaryController.text,
         authorId: int.tryParse(_authorIdController.text),
@@ -124,11 +119,6 @@ class _BookFormState extends State<BookForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: _saveForm,
-                  child: Text(widget.book == null ? 'Create' : 'Save'),
-                ),
-                const SizedBox(width: 10),
                 FilledButton(
                   onPressed: () {
                     if (widget.book == null) {
@@ -137,7 +127,13 @@ class _BookFormState extends State<BookForm> {
                       context.go('/book_detail/${widget.book?.id}');
                     }
                   },
+                  style: FilledButton.styleFrom(backgroundColor: Colors.red),
                   child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 10),
+                FilledButton(
+                  onPressed: _saveForm,
+                  child: Text(widget.book == null ? 'Create' : 'Save'),
                 ),
               ],
             ),

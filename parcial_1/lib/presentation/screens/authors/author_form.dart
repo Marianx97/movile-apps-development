@@ -23,17 +23,12 @@ class _AuthorFormState extends State<AuthorForm> {
   late TextEditingController _biographyController;
   late TextEditingController _imageUrlController;
 
-  /// TODO:
-  /// - Remove this when implementing repository logic
-  late int _authorsLength;
-
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.author?.name ?? '');
     _biographyController = TextEditingController(text: widget.author?.biography ?? '');
     _imageUrlController = TextEditingController(text: widget.author?.imageUrl ?? '');
-    _authorsLength = authors.length;
   }
 
   @override
@@ -47,7 +42,7 @@ class _AuthorFormState extends State<AuthorForm> {
   void _saveForm() {
     if (_formKey.currentState!.validate()) {
       final author = Author(
-        id: widget.author?.id ?? _authorsLength + 1,
+        id: widget.author?.id,
         name: _nameController.text,
         biography: _biographyController.text,
         imageUrl: _imageUrlController.text,
@@ -92,11 +87,6 @@ class _AuthorFormState extends State<AuthorForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: _saveForm,
-                  child: Text(widget.author == null ? 'Create' : 'Save'),
-                ),
-                const SizedBox(width: 10),
                 FilledButton(
                   onPressed: () {
                     if (widget.author == null) {
@@ -105,7 +95,13 @@ class _AuthorFormState extends State<AuthorForm> {
                       context.go('/author_detail/${widget.author?.id}');
                     }
                   },
+                  style: FilledButton.styleFrom(backgroundColor: Colors.red),
                   child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 10),
+                FilledButton(
+                  onPressed: _saveForm,
+                  child: Text(widget.author == null ? 'Create' : 'Save'),
                 ),
               ],
             ),
