@@ -100,9 +100,9 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Author` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `biography` TEXT NOT NULL, `imageUrl` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `Author` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `biography` TEXT NOT NULL, `imageUrl` TEXT)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Book` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `authorId` INTEGER, `releaseYear` INTEGER, `imageUrl` TEXT, `summary` TEXT NOT NULL, `title` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Book` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `authorId` INTEGER, `releaseYear` INTEGER, `imageUrl` TEXT, `summary` TEXT NOT NULL, `title` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
 
@@ -141,6 +141,16 @@ class _$AuthorDao extends AuthorDao {
                   'name': item.name,
                   'biography': item.biography,
                   'imageUrl': item.imageUrl
+                }),
+        _authorUpdateAdapter = UpdateAdapter(
+            database,
+            'Author',
+            ['id'],
+            (Author item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'biography': item.biography,
+                  'imageUrl': item.imageUrl
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -151,11 +161,13 @@ class _$AuthorDao extends AuthorDao {
 
   final InsertionAdapter<Author> _authorInsertionAdapter;
 
+  final UpdateAdapter<Author> _authorUpdateAdapter;
+
   @override
   Future<List<Author>> findAllAuthors() async {
     return _queryAdapter.queryList('SELECT * FROM Author',
         mapper: (Map<String, Object?> row) => Author(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             name: row['name'] as String,
             biography: row['biography'] as String,
             imageUrl: row['imageUrl'] as String?));
@@ -165,7 +177,7 @@ class _$AuthorDao extends AuthorDao {
   Future<Author?> findAuthorById(int id) async {
     return _queryAdapter.query('SELECT * FROM Author WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Author(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             name: row['name'] as String,
             biography: row['biography'] as String,
             imageUrl: row['imageUrl'] as String?),
@@ -175,6 +187,11 @@ class _$AuthorDao extends AuthorDao {
   @override
   Future<void> insertAuthor(Author author) async {
     await _authorInsertionAdapter.insert(author, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateAuthor(Author author) async {
+    await _authorUpdateAdapter.update(author, OnConflictStrategy.abort);
   }
 }
 
@@ -193,6 +210,18 @@ class _$BookDao extends BookDao {
                   'imageUrl': item.imageUrl,
                   'summary': item.summary,
                   'title': item.title
+                }),
+        _bookUpdateAdapter = UpdateAdapter(
+            database,
+            'Book',
+            ['id'],
+            (Book item) => <String, Object?>{
+                  'id': item.id,
+                  'authorId': item.authorId,
+                  'releaseYear': item.releaseYear,
+                  'imageUrl': item.imageUrl,
+                  'summary': item.summary,
+                  'title': item.title
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -203,11 +232,13 @@ class _$BookDao extends BookDao {
 
   final InsertionAdapter<Book> _bookInsertionAdapter;
 
+  final UpdateAdapter<Book> _bookUpdateAdapter;
+
   @override
   Future<List<Book>> findAllBooks() async {
     return _queryAdapter.queryList('SELECT * FROM Book',
         mapper: (Map<String, Object?> row) => Book(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             authorId: row['authorId'] as int?,
             releaseYear: row['releaseYear'] as int?,
             imageUrl: row['imageUrl'] as String?,
@@ -217,9 +248,9 @@ class _$BookDao extends BookDao {
 
   @override
   Future<List<Book>> findAllBooksByAuthor(int authorId) async {
-    return _queryAdapter.queryList('SELECT * FROM Book WHERE author_id = ?1',
+    return _queryAdapter.queryList('SELECT * FROM Book WHERE authorId = ?1',
         mapper: (Map<String, Object?> row) => Book(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             authorId: row['authorId'] as int?,
             releaseYear: row['releaseYear'] as int?,
             imageUrl: row['imageUrl'] as String?,
@@ -232,7 +263,7 @@ class _$BookDao extends BookDao {
   Future<Book?> findBookById(int id) async {
     return _queryAdapter.query('SELECT * FROM Book WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Book(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             authorId: row['authorId'] as int?,
             releaseYear: row['releaseYear'] as int?,
             imageUrl: row['imageUrl'] as String?,
@@ -244,6 +275,11 @@ class _$BookDao extends BookDao {
   @override
   Future<void> insertBook(Book book) async {
     await _bookInsertionAdapter.insert(book, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateBook(Book book) async {
+    await _bookUpdateAdapter.update(book, OnConflictStrategy.replace);
   }
 }
 

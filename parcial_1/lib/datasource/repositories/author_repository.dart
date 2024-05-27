@@ -19,4 +19,9 @@ class AuthorRepository {
   Future<void> createAuthor(Author author) {
     return _authorDao.insertAuthor(author);
   }
+
+  /// Updates author with the given params
+  Future<void> editAuthor(Author author) {
+    return _authorDao.updateAuthor(author);
+  }
 }

@@ -11,4 +11,7 @@ abstract class AuthorDao {
 
   @insert
   Future<void> insertAuthor(Author author);
+
+  @update
+  Future<void> updateAuthor(Author author);
 }

@@ -24,4 +24,9 @@ class BookRepository {
   Future<void> createBook(Book book) {
     return _bookDao.insertBook(book);
   }
+
+  /// Updates author with the given params
+  Future<void> editBook(Book book) {
+    return _bookDao.updateBook(book);
+  }
 }
