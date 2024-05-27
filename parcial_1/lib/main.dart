@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicialización de la DB
-  database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  database = await buildDatabase();
 
   runApp(const MainApp());
 }
