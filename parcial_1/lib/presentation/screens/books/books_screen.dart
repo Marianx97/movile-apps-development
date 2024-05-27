@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/domain/book.dart';
+import 'package:parcial_1/presentation/screens/books/book_image.dart';
 import 'package:parcial_1/presentation/screens/books/create_book_screen.dart';
 import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
 
@@ -105,12 +106,10 @@ class _BookItemContent extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          /// TODO:
-          /// - Change this child for the Image widget
-          child: const SizedBox(
+          child: BookImage(
+            imageUrl: book.imageUrl,
             height: 150,
             width: 100,
-            child: Placeholder()
           ),
         ),
         const SizedBox(width: 20),

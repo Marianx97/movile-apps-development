@@ -52,7 +52,7 @@ class _AuthorDetailContent extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _AuthorImage(),
+        _AuthorImage(imageUrl: author.imageUrl),
         Text(
           author.name,
           style: Theme.of(context).textTheme.titleLarge,
@@ -70,18 +70,29 @@ class _AuthorDetailContent extends StatelessWidget {
 }
 
 class _AuthorImage extends StatelessWidget {
+  final String? imageUrl;
+
+  const _AuthorImage({this.imageUrl});
+
   @override
   Widget build(BuildContext context) {
+    Image placeholder = const Image(image: AssetImage('assets/images/author_placeholder.png'));
+    Image authorImage = imageUrl != null && imageUrl!.isNotEmpty
+      ? Image.network(
+          imageUrl!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => placeholder,
+        )
+      : placeholder;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      /// TODO:
-      /// - Replace the placeholder for the real image
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
-        child: const SizedBox(
+        child: SizedBox(
           height: 300,
           width: 250,
-          child: Placeholder()
+          child: authorImage,
         ),
       ),
     );

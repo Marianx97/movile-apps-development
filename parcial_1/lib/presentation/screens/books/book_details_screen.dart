@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parcial_1/domain/book.dart';
+import 'package:parcial_1/presentation/screens/books/book_image.dart';
 import 'package:parcial_1/presentation/screens/books/books_screen.dart';
 import 'package:parcial_1/presentation/widgets/edit_button.dart';
 import 'package:parcial_1/presentation/widgets/go_back_button.dart';
@@ -56,7 +57,11 @@ class _BookDetailContent extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _BookImage(),
+        BookImage(
+          imageUrl: book.imageUrl,
+          height: 300,
+          width: 250,
+        ),
         const SizedBox(height: 20),
         Text(
           book.title,
@@ -73,25 +78,6 @@ class _BookDetailContent extends StatelessWidget {
         const SizedBox(height: 10),
         _BookSummaryCard(book: book),
       ],
-    );
-  }
-}
-
-class _BookImage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      /// TODO:
-      /// - Replace the placeholder for the real image
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: const SizedBox(
-          height: 300,
-          width: 250,
-          child: Placeholder()
-        ),
-      ),
     );
   }
 }
