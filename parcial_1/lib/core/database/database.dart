@@ -51,6 +51,12 @@ Future<AppDatabase> buildDatabase() async {
             (2, 'J.K. Rowling', 'Joanne Rowling, conocida como J.K. Rowling, nació el 31 de julio de 1965 en Yate, Inglaterra. Es la autora de la mundialmente famosa serie de libros "Harry Potter", que ha vendido más de 500 millones de copias y ha sido traducida a más de 80 idiomas. Rowling concibió la idea de "Harry Potter" en un tren en 1990 y publicó el primer libro, "Harry Potter y la piedra filosofal", en 1997. Además de su trabajo literario, es conocida por su filantropía y ha fundado varias organizaciones benéficas.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnBTzkiR8GVQ8BVtsb24iBWhfwghaNzo8xKBy0ffuJKQ&s'),
             (3, 'J.R.R. Tolkien', 'John Ronald Reuel Tolkien nació el 3 de enero de 1892 en Bloemfontein, Sudáfrica, y falleció el 2 de septiembre de 1973 en Bournemouth, Inglaterra. Fue un escritor, poeta, filólogo y profesor universitario, conocido por sus obras de fantasía "El Hobbit" (1937) y "El Señor de los Anillos" (1954-1955). Tolkien fue profesor de anglosajón en la Universidad de Oxford y es considerado el padre de la fantasía moderna. Su detallada construcción de mundos y lenguajes ficticios ha dejado un legado perdurable en la literatura y la cultura popular.', 'https://i0.wp.com/elanillounico.com/wp-content/uploads/2015/03/JRR-Tolkien15.jpg?fit=760%2C1076&ssl=1');
           ''');
+
+          await database.execute('''
+            INSERT INTO User (id, email, password, username) VALUES
+            (1, 'alberto@fakemail.com', 'pass1', 'Albert'),
+            (2, 'barbara@fakemail.com', 'pass2', 'Barbie');
+          ''');
         },
       ))
       .build();

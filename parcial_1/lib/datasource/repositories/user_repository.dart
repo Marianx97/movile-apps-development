@@ -5,6 +5,11 @@ import 'package:parcial_1/main.dart';
 class UserRepository {
   final UserDao _userDao = database.userDao;
 
+  /// Get all users
+  Future<List<User>> getUsers() {
+    return _userDao.findAllUsers();
+  }
+
   /// Get user by ID
   Future<User?> getUserById(int id) {
     return _userDao.findUserById(id);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:parcial_1/datasource/repositories/user_repository.dart';
 
 import 'package:parcial_1/domain/user.dart';
 import 'package:parcial_1/presentation/screens/books/books_screen.dart';
@@ -17,10 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
   TextEditingController userController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  late Future<List<User>> usersRequest;
 
   @override
   void initState() {
     _passwordVisible = false;
+    usersRequest = UserRepository().getUsers();
     super.initState();
   }
 
@@ -89,21 +92,34 @@ class _LoginScreenState extends State<LoginScreen> {
               autocorrect: false,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if(userController.text.isEmpty || passController.text.isEmpty) {
-                  showSnackBar('Both credentials must be present', context);
-                  return;
-                }
-
-                if (checkUserPresent(users)) {
-                  context.goNamed(BooksScreen.name);
+            FutureBuilder(
+              future: usersRequest,
+              builder: ((context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
                 } else {
-                  showSnackBar('Invalid credentials', context);
-                  return;
+                  if (snapshot.hasData) {
+                    return ElevatedButton(
+                      onPressed: () async {
+                        if(userController.text.isEmpty || passController.text.isEmpty) {
+                          showSnackBar('Both credentials must be present', context);
+                          return;
+                        }
+
+                        if (checkUserPresent(snapshot.data!)) {
+                          context.goNamed(BooksScreen.name);
+                        } else {
+                          showSnackBar('Invalid credentials', context);
+                          return;
+                        }
+                      },
+                      child: const Text('Login'),
+                    );
+                  } else {
+                    return const Text('Something Failed');
+                  }
                 }
-              },
-              child: const Text('Login'),
+              }),
             ),
             const SizedBox(height: 40),
             const Text('... or sign up if you don\'t have an account'),

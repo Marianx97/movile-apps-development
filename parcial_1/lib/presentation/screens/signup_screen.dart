@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:parcial_1/datasource/repositories/user_repository.dart';
 import 'package:parcial_1/domain/user.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -20,11 +18,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   TextEditingController passConfController = TextEditingController();
+  late Future<List<User>> usersRequest;
 
   @override
   void initState() {
     _passwordVisible = false;
     _passwordConfVisible = false;
+    usersRequest = UserRepository().getUsers();
     super.initState();
   }
 
@@ -52,6 +52,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
       element.email == emailController.text ||
       element.username == userController.text
     ));
+  }
+
+  void signUpProcess(BuildContext context, List<User> users) {
+    // Check if any field is empty
+    if (anyControllerEmpty()) {
+      showSnackBar('Missing fields', context);
+      return;
+    }
+
+    // Check if password and confirmation match
+    if (passwordDiff()) {
+      showSnackBar('Password and confirmation must be the same', context);
+      return;
+    }
+
+    // Check if username is taken
+    if (checkUsernameOrEmailTaken(users)) {
+      showSnackBar('A user already for this username/email. Please try with another', context);
+      return;
+    }
+
+    // All fields are valid, we create the user
+    User user = User(
+      username: userController.text,
+      email: emailController.text,
+      password: passController.text,
+    );
+
+    UserRepository().createUser(user);
+
+    showSnackBar('User successfully created', context);
+
+    context.pop();
   }
 
   @override
@@ -103,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _passwordVisible = !_passwordVisible;
                     });
                   },
-                )
+                ),
               ),
               obscureText: !_passwordVisible,
               enableSuggestions: false,
@@ -126,7 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _passwordConfVisible = !_passwordConfVisible;
                     });
                   },
-                )
+                ),
               ),
               obscureText: !_passwordConfVisible,
               enableSuggestions: false,
@@ -141,48 +174,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: const Text('Back to Login'),
                 ),
                 const SizedBox(width: 10),
-                FilledButton(
-                  onPressed: () {
-                    // Check if any field is empty
-                    if (anyControllerEmpty()) {
-                      showSnackBar('Missing fields', context);
-                      return;
+                FutureBuilder(
+                  future: usersRequest,
+                  builder: ((context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      if (snapshot.hasData) {
+                        return FilledButton(
+                          onPressed: () => signUpProcess(context, snapshot.data!),
+                          child: const Text('Sign Up!'),
+                        );
+                      } else {
+                        return const Text('Something Failed');
+                      }
                     }
-                
-                    // Check if password and confirmation match
-                    if (passwordDiff()) {
-                      showSnackBar('Password and confirmation must be the same', context);
-                      return;
-                    }
-                
-                    // Check if username is taken
-                    if (checkUsernameOrEmailTaken(users)) {
-                      showSnackBar('A user already for this username/email. Please try with another', context);
-                      return;
-                    }
-                
-                    // All fields are valid, we create the user
-                    Random random = Random();
-                    int randomId = random.nextInt(100);
-                
-                    User user = User(
-                      id: randomId,
-                      username: userController.text,
-                      email: emailController.text,
-                      password: passController.text,
-                    );
-                    users.add(user);
-                
-                    showSnackBar('User successfully created', context);
-                
-                    context.pop();
-                  },
-                  child: const Text('Sign Up!'),
+                  }),
                 ),
               ],
-            )
+            ),
           ],
-        )
+        ),
       ),
     );
   }

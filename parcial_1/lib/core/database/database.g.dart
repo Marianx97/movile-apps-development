@@ -307,6 +307,16 @@ class _$UserDao extends UserDao {
   final InsertionAdapter<User> _userInsertionAdapter;
 
   @override
+  Future<List<User>> findAllUsers() async {
+    return _queryAdapter.queryList('SELECT * FROM User',
+        mapper: (Map<String, Object?> row) => User(
+            id: row['id'] as int?,
+            email: row['email'] as String,
+            password: row['password'] as String,
+            username: row['username'] as String));
+  }
+
+  @override
   Future<User?> findUserById(int id) async {
     return _queryAdapter.query('SELECT * FROM User WHERE id = ?1',
         mapper: (Map<String, Object?> row) => User(
