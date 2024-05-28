@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
+import 'package:parcial_1/datasource/daos/user_session_dao.dart';
+import 'package:parcial_1/domain/user_session.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 import 'package:parcial_1/datasource/daos/author_dao.dart';
@@ -12,11 +14,12 @@ import 'package:parcial_1/domain/user.dart';
 
 part 'database.g.dart';
 
-@Database(version: 1, entities: [Author, Book, User])
+@Database(version: 1, entities: [Author, Book, User, UserSession])
 abstract class AppDatabase extends FloorDatabase {
   AuthorDao get authorDao;
   BookDao get bookDao;
   UserDao get userDao;
+  UserSessionDao get userSessionDao;
 }
 
 Future<AppDatabase> buildDatabase() async {
@@ -24,7 +27,6 @@ Future<AppDatabase> buildDatabase() async {
       .databaseBuilder('app_database.db')
       .addCallback(Callback(
         onCreate: (database, version) async {
-          // Raw SQL to create initial data if needed
           await database.execute('''
             INSERT INTO Book (id, authorId, releaseYear, imageUrl, summary, title) VALUES
             (1, 1, 2002, 'https://www.penguinlibros.com/ar/2126605-thickbox_default/eragon-saga-el-legado-1.jpg', 'La historia transcurre en el ficticio territorio de Alagaêsia. El protagonista, Eragon, encuentra una especie de piedra preciosa de gran tamaño y color azul mientras está cazando en el bosque.', 'Eragon'),

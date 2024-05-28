@@ -78,6 +78,8 @@ class _$AppDatabase extends AppDatabase {
 
   UserDao? _userDaoInstance;
 
+  UserSessionDao? _userSessionDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -105,6 +107,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Book` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `authorId` INTEGER, `releaseYear` INTEGER, `imageUrl` TEXT, `summary` TEXT NOT NULL, `title` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `UserSession` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -125,6 +129,12 @@ class _$AppDatabase extends AppDatabase {
   @override
   UserDao get userDao {
     return _userDaoInstance ??= _$UserDao(database, changeListener);
+  }
+
+  @override
+  UserSessionDao get userSessionDao {
+    return _userSessionDaoInstance ??=
+        _$UserSessionDao(database, changeListener);
   }
 }
 
@@ -330,5 +340,44 @@ class _$UserDao extends UserDao {
   @override
   Future<void> insertUser(User user) async {
     await _userInsertionAdapter.insert(user, OnConflictStrategy.abort);
+  }
+}
+
+class _$UserSessionDao extends UserSessionDao {
+  _$UserSessionDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _userSessionInsertionAdapter = InsertionAdapter(
+            database,
+            'UserSession',
+            (UserSession item) =>
+                <String, Object?>{'id': item.id, 'userId': item.userId});
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<UserSession> _userSessionInsertionAdapter;
+
+  @override
+  Future<List<UserSession>> findAllUserSessions() async {
+    return _queryAdapter.queryList('SELECT * FROM UserSession',
+        mapper: (Map<String, Object?> row) =>
+            UserSession(id: row['id'] as int?, userId: row['userId'] as int));
+  }
+
+  @override
+  Future<void> deleteSessionById(int id) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM UserSession WHERE id = ?1',
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertUserSession(UserSession userSession) async {
+    await _userSessionInsertionAdapter.insert(
+        userSession, OnConflictStrategy.abort);
   }
 }
