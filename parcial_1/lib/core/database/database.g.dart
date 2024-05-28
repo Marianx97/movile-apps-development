@@ -80,6 +80,8 @@ class _$AppDatabase extends AppDatabase {
 
   UserSessionDao? _userSessionDaoInstance;
 
+  UserFavoriteDao? _userFavoriteDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -109,6 +111,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `User` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `username` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `UserSession` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `UserFavorite` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `bookId` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -135,6 +139,12 @@ class _$AppDatabase extends AppDatabase {
   UserSessionDao get userSessionDao {
     return _userSessionDaoInstance ??=
         _$UserSessionDao(database, changeListener);
+  }
+
+  @override
+  UserFavoriteDao get userFavoriteDao {
+    return _userFavoriteDaoInstance ??=
+        _$UserFavoriteDao(database, changeListener);
   }
 }
 
@@ -391,5 +401,58 @@ class _$UserSessionDao extends UserSessionDao {
   Future<void> insertUserSession(UserSession userSession) async {
     await _userSessionInsertionAdapter.insert(
         userSession, OnConflictStrategy.abort);
+  }
+}
+
+class _$UserFavoriteDao extends UserFavoriteDao {
+  _$UserFavoriteDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _userFavoriteInsertionAdapter = InsertionAdapter(
+            database,
+            'UserFavorite',
+            (UserFavorite item) => <String, Object?>{
+                  'id': item.id,
+                  'userId': item.userId,
+                  'bookId': item.bookId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<UserFavorite> _userFavoriteInsertionAdapter;
+
+  @override
+  Future<UserFavorite?> findFavoriteForUser(
+    int userId,
+    int bookId,
+  ) async {
+    return _queryAdapter.query(
+        'SELECT * FROM UserFavorite WHERE userId = ?1 AND bookId = ?2',
+        mapper: (Map<String, Object?> row) => UserFavorite(
+            id: row['id'] as int?,
+            userId: row['userId'] as int,
+            bookId: row['bookId'] as int),
+        arguments: [userId, bookId]);
+  }
+
+  @override
+  Future<void> deleteFavorite(
+    int userId,
+    int bookId,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM UserFavorite WHERE userId = ?1 AND bookId = ?2',
+        arguments: [userId, bookId]);
+  }
+
+  @override
+  Future<void> insertFavorite(UserFavorite userFavorite) async {
+    await _userFavoriteInsertionAdapter.insert(
+        userFavorite, OnConflictStrategy.abort);
   }
 }

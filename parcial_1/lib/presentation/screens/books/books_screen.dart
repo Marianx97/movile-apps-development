@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/datasource/repositories/author_repository.dart';
 import 'package:parcial_1/datasource/repositories/book_repository.dart';
+import 'package:parcial_1/datasource/repositories/user_favorite_repository.dart';
+import 'package:parcial_1/datasource/repositories/user_session_repository.dart';
 import 'package:parcial_1/domain/author.dart';
 import 'package:parcial_1/domain/book.dart';
+import 'package:parcial_1/domain/user_favorite.dart';
+import 'package:parcial_1/domain/user_session.dart';
 import 'package:parcial_1/presentation/screens/books/book_image.dart';
 import 'package:parcial_1/presentation/screens/books/create_book_screen.dart';
 import 'package:parcial_1/presentation/widgets/drawer_menu.dart';
@@ -88,26 +92,52 @@ class _BooksList extends StatefulWidget {
 }
 
 class _BooksListState extends State<_BooksList> {
+  late Future<List<UserSession>> sessionsRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    sessionsRequest = UserSessionRepository().getUserSessions();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: ListView.builder(
-        itemCount: widget.booksList.length,
-        itemBuilder: (context, index) {
-          final book = widget.booksList[index];
-          return _BookItem(book: book);
+    return FutureBuilder(
+      future: sessionsRequest,
+      builder: ((context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.hasData) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: ListView.builder(
+                itemCount: widget.booksList.length,
+                itemBuilder: (context, index) {
+                  final book = widget.booksList[index];
+                  return _BookItem(
+                    book: book,
+                    userId: snapshot.data![0].id!,
+                  );
+                }
+              ),
+            );
+          } else {
+            return const Text('Something Failed');
+          }
         }
-      ),
+      })
     );
   }
 }
 
 class _BookItem extends StatelessWidget {
   final Book book;
+  final int userId;
 
   const _BookItem({
-    required this.book
+    required this.book,
+    required this.userId,
   });
 
   @override
@@ -117,7 +147,10 @@ class _BookItem extends StatelessWidget {
         onTap: () => _goToBookDetails(context, book),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: _BookItemContent(book: book),
+          child: _BookItemContent(
+            book: book,
+            userId: userId,
+          ),
         ),
       ),
     );
@@ -125,11 +158,13 @@ class _BookItem extends StatelessWidget {
 }
 
 class _BookItemContent extends StatefulWidget {
+  final Book book;
+  final int userId;
+
   const _BookItemContent({
     required this.book,
+    required this.userId,
   });
-
-  final Book book;
 
   @override
   State<_BookItemContent> createState() => _BookItemContentState();
@@ -137,11 +172,13 @@ class _BookItemContent extends StatefulWidget {
 
 class _BookItemContentState extends State<_BookItemContent> {
   late Future<Author?> authorRequest;
+  late Future<UserFavorite?> favoriteRequest;
 
   @override
   void initState() {
     super.initState();
     authorRequest = AuthorRepository().getAuthorById(widget.book.authorId ?? -1);
+    favoriteRequest = UserFavoriteRepository().getFavoriteForUser(widget.userId, widget.book.id!);
   }
 
   @override
@@ -194,12 +231,36 @@ class _BookItemContentState extends State<_BookItemContent> {
         /// TODO:
         /// - Add function to mark book as favorite for user
         /// - Add logic to change between the filled and the outlined icon
-        IconButton(
-          onPressed: () {
-            print('You liked this book');
-          },
-          icon: const Icon(Icons.star_outlined, color: Colors.amber),
-        ),
+        FutureBuilder(
+          future: favoriteRequest,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              if (snapshot.hasData) {
+                return IconButton(
+                  onPressed: () {
+                    print('Pressed to unfavorite the book');
+                    UserFavoriteRepository().deleteFavorite(widget.userId, widget.book.id!);
+                  },
+                  icon: const Icon(Icons.star_outlined, color: Colors.amber),
+                );
+              } else {
+                return IconButton(
+                  onPressed: () {
+                    print('Pressed to favorite the book');
+                    UserFavorite favorite = UserFavorite(
+                      userId: widget.userId,
+                      bookId: widget.book.id!,
+                    );
+                    UserFavoriteRepository().createFavorite(favorite);
+                  },
+                  icon: const Icon(Icons.star_outline_outlined)
+                );
+              }
+            }
+          }),
+        )
       ],
     );
   }
