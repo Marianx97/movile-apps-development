@@ -139,9 +139,6 @@ class _BookDetailContentState extends State<_BookDetailContent> {
   }
 }
 
-/// TODO:
-/// - Apply scrolling for long texts
-
 class _BookSummaryCard extends StatelessWidget {
   const _BookSummaryCard({
     required this.book,
@@ -149,17 +146,51 @@ class _BookSummaryCard extends StatelessWidget {
 
   final Book book;
 
+  void _showFullTextDialog(BuildContext context, String text) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Summary',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                SingleChildScrollView(
+                  child: Text(text),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text(
-          book.summary,
-          style: Theme.of(context).textTheme.bodyMedium,
-          textAlign: TextAlign.justify,
-          maxLines: 10,
-          overflow: TextOverflow.ellipsis,
+      child: InkWell(
+        onTap: () => _showFullTextDialog(context, book.summary),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            book.summary,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.justify,
+            maxLines: 10,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );

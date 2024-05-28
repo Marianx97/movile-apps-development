@@ -76,6 +76,11 @@ class _AuthorFormState extends State<AuthorForm> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter the author\'s biography';
                 }
+
+                if (value.length > 1500) {
+                  return 'Biography is too long';
+                }
+
                 return null;
               },
             ),

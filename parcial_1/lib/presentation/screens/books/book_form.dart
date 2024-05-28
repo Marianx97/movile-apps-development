@@ -84,6 +84,11 @@ class _BookFormState extends State<BookForm> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a summary';
                 }
+
+                if (value.length > 1500) {
+                  return 'Summary is too long';
+                }
+
                 return null;
               },
             ),
@@ -103,9 +108,7 @@ class _BookFormState extends State<BookForm> {
               decoration: const InputDecoration(labelText: 'Release Year'),
               keyboardType: TextInputType.number,
               validator: (value) {
-                if (value != null && (
-                  int.tryParse(value) == null && int.tryParse(value)! < 0
-                )) {
+                if (int.tryParse(value!) == null || int.tryParse(value)! < 0) {
                   return 'Please enter a valid year';
                 }
                 return null;

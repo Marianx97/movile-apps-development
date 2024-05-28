@@ -156,25 +156,56 @@ class _AuthorImage extends StatelessWidget {
   }
 }
 
-/// TODO:
-/// - Apply scrolling for long texts
-
 class _AuthorBiographyCard extends StatelessWidget {
   final Author author;
 
   const _AuthorBiographyCard({required this.author});
 
+  void _showFullTextDialog(BuildContext context, String text) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Biography',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                SingleChildScrollView(
+                  child: Text(text),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text(
-          author.biography,
-          style: Theme.of(context).textTheme.bodyMedium,
-          textAlign: TextAlign.justify,
-          maxLines: 10,
-          overflow: TextOverflow.ellipsis,
+      child: InkWell(
+        onTap: () => _showFullTextDialog(context, author.biography),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            author.biography,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.justify,
+            maxLines: 10,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );
