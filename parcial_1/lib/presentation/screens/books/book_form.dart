@@ -77,9 +77,18 @@ class _BookFormState extends State<BookForm> {
                 return null;
               },
             ),
+            const SizedBox(height: 15),
             TextFormField(
               controller: _summaryController,
-              decoration: const InputDecoration(labelText: 'Summary'),
+              maxLines: 5,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                labelText: 'Summary',
+                alignLabelWithHint: true,
+                contentPadding: const EdgeInsets.all(16.0), // Adds padding inside the text area
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a summary';

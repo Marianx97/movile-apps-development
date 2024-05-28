@@ -69,9 +69,18 @@ class _AuthorFormState extends State<AuthorForm> {
                 return null;
               },
             ),
+            const SizedBox(height: 15),
             TextFormField(
               controller: _biographyController,
-              decoration: const InputDecoration(labelText: 'Biography'),
+              maxLines: 5,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                labelText: 'Biography',
+                alignLabelWithHint: true,
+                contentPadding: const EdgeInsets.all(16.0), // Adds padding inside the text area
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter the author\'s biography';
