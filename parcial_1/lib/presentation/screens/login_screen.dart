@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:parcial_1/datasource/repositories/user_repository.dart';
+import 'package:parcial_1/datasource/repositories/user_session_repository.dart';
 
 import 'package:parcial_1/domain/user.dart';
+import 'package:parcial_1/domain/user_session.dart';
 import 'package:parcial_1/presentation/screens/books/books_screen.dart';
 import 'package:parcial_1/presentation/screens/signup_screen.dart';
 
@@ -100,13 +102,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 } else {
                   if (snapshot.hasData) {
                     return ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if(userController.text.isEmpty || passController.text.isEmpty) {
                           showSnackBar('Both credentials must be present', context);
                           return;
                         }
 
                         if (checkUserPresent(snapshot.data!)) {
+                          User user = snapshot.data!.firstWhere((element) {
+                            String user = userController.text.trim();
+                            return (element.email == user || element.username == user)
+                              && element.password == passController.text;
+                            });
+
+                          UserSessionRepository().createUserSession(UserSession(userId: user.id!));
+
                           context.goNamed(BooksScreen.name);
                         } else {
                           showSnackBar('Invalid credentials', context);

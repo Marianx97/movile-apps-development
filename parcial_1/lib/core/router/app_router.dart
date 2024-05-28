@@ -10,6 +10,7 @@ import 'package:parcial_1/presentation/screens/books/books_screen.dart';
 import 'package:parcial_1/presentation/screens/books/create_book_screen.dart';
 import 'package:parcial_1/presentation/screens/books/edit_book_screen.dart';
 import 'package:parcial_1/presentation/screens/login_screen.dart';
+import 'package:parcial_1/presentation/screens/root_screen.dart';
 import 'package:parcial_1/presentation/screens/signup_screen.dart';
 
 final appRouter = GoRouter(
@@ -17,6 +18,11 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
+      name: RootScreen.name,
+      builder: (context, state) => const RootScreen(),
+    ),
+    GoRoute(
+      path: '/login',
       name: LoginScreen.name,
       builder: (context, state) => const LoginScreen(),
     ),
