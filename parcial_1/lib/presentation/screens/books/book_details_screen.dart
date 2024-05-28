@@ -5,6 +5,7 @@ import 'package:parcial_1/domain/author.dart';
 import 'package:parcial_1/domain/book.dart';
 import 'package:parcial_1/presentation/screens/books/book_image.dart';
 import 'package:parcial_1/presentation/screens/books/books_screen.dart';
+import 'package:parcial_1/presentation/widgets/delete_button.dart';
 import 'package:parcial_1/presentation/widgets/edit_button.dart';
 import 'package:parcial_1/presentation/widgets/go_back_button.dart';
 
@@ -53,7 +54,18 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
           }
         }),
       ),
-      floatingActionButton: EditButton(editPath: '/books/edit/${widget.bookId}'),
+      floatingActionButton: OverflowBar(
+        alignment: MainAxisAlignment.spaceAround,
+        children: [
+          EditButton(
+            editPath: '/books/edit/${widget.bookId}',
+          ),
+          DeleteButton(
+            elementType: 'Book',
+            elementId: widget.bookId.toString(),
+          ),
+        ],
+      ),
     );
   }
 }

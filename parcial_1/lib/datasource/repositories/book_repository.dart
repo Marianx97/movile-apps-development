@@ -29,4 +29,9 @@ class BookRepository {
   Future<void> editBook(Book book) {
     return _bookDao.updateBook(book);
   }
+
+  /// Deletes book with the given id
+  Future<void> deleteBook(int bookId) {
+    return _bookDao.deleteBookById(bookId);
+  }
 }

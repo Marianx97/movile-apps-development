@@ -9,14 +9,13 @@ class EditButton extends StatelessWidget {
     required this.editPath,
   });
 
-
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
+    return IconButton(
+      icon: const Icon(Icons.edit),
       onPressed: () {
         context.go(editPath);
       },
-      child: const Icon(Icons.edit),
     );
   }
 }

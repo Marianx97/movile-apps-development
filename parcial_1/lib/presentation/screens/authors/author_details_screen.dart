@@ -4,6 +4,7 @@ import 'package:parcial_1/datasource/repositories/book_repository.dart';
 import 'package:parcial_1/domain/author.dart';
 import 'package:parcial_1/domain/book.dart';
 import 'package:parcial_1/presentation/screens/authors/authors_screen.dart';
+import 'package:parcial_1/presentation/widgets/delete_button.dart';
 import 'package:parcial_1/presentation/widgets/edit_button.dart';
 import 'package:parcial_1/presentation/widgets/go_back_button.dart';
 
@@ -52,7 +53,18 @@ class _AuthorDetailsScreenState extends State<AuthorDetailsScreen> {
           }
         }),
       ),
-      floatingActionButton: EditButton(editPath: '/authors/edit/${widget.authorId}'),
+      floatingActionButton: OverflowBar(
+        alignment: MainAxisAlignment.spaceAround,
+        children: [
+          EditButton(
+            editPath: '/authors/edit/${widget.authorId}',
+          ),
+          DeleteButton(
+            elementType: 'Author',
+            elementId: widget.authorId.toString(),
+          ),
+        ],
+      ),
     );
   }
 }

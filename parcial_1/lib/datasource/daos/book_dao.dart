@@ -17,4 +17,7 @@ abstract class BookDao {
 
   @Update(onConflict: OnConflictStrategy.replace)
   Future<void> updateBook(Book book);
+
+  @Query('DELETE FROM Book WHERE id = :id')
+  Future<void> deleteBookById(int id);
 }

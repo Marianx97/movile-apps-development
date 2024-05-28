@@ -14,4 +14,7 @@ abstract class AuthorDao {
 
   @update
   Future<void> updateAuthor(Author author);
+
+  @Query('DELETE FROM Author WHERE id = :id')
+  Future<void> deleteAuthorById(int id);
 }

@@ -195,6 +195,12 @@ class _$AuthorDao extends AuthorDao {
   }
 
   @override
+  Future<void> deleteAuthorById(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Author WHERE id = ?1', arguments: [id]);
+  }
+
+  @override
   Future<void> insertAuthor(Author author) async {
     await _authorInsertionAdapter.insert(author, OnConflictStrategy.abort);
   }
@@ -280,6 +286,12 @@ class _$BookDao extends BookDao {
             summary: row['summary'] as String,
             title: row['title'] as String),
         arguments: [id]);
+  }
+
+  @override
+  Future<void> deleteBookById(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Book WHERE id = ?1', arguments: [id]);
   }
 
   @override

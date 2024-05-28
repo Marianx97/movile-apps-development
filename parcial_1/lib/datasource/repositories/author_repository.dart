@@ -24,4 +24,9 @@ class AuthorRepository {
   Future<void> editAuthor(Author author) {
     return _authorDao.updateAuthor(author);
   }
+
+  /// Deletes author with the given id
+  Future<void> deleteAuthor(int authorId) {
+    return _authorDao.deleteAuthorById(authorId);
+  }
 }
